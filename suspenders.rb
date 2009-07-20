@@ -10,6 +10,9 @@ plugin 'hoptoad_notifier', :git => "git://github.com/thoughtbot/hoptoad_notifier
 plugin 'limerick_rake', :git => "git://github.com/thoughtbot/limerick_rake.git"
 plugin 'mile_marker', :git => "git://github.com/thoughtbot/mile_marker.git"
 plugin 'squirrel', :git => "git://github.com/thoughtbot/squirrel.git"
+plugin 'fckeditor', :svn => "svn://rubyforge.org//var/svn/fckeditorp/trunk/fckeditor"
+plugin 'comatose', :git => "git://github.com/darthapo/comatose.git"
+plugin 'jrails', "http://ennerchi.googlecode.com/svn/trunk/plugins/jrails"
 
 #====================
 # GEMS
@@ -21,6 +24,10 @@ gem 'mocha'
 gem 'thoughtbot-factory_girl'
 gem 'thoughtbot-shoulda'
 gem 'thoughtbot-quietbacktrace'
+gem 'restful_authentication'
+gem 'thoughtbot-paperclip'
+gem 'newrelic_rpm'
+gem 'haml'
 
 freeze!
 # rake("gems:install", :sudo => true)
@@ -207,6 +214,10 @@ Rails::Initializer.run do |config|
              :lib => 'shoulda', 
              :source => 'http://gems.github.com', 
              :version => '>= 2.0.5'
+  config.gem 'newrelic_rpm',
+             :source => 'http://gems.github.com'
+  config.gem 'haml',
+             :version => '2.0.9'
   
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -623,10 +634,20 @@ end
 # ====================
 # FINALIZE
 # ====================
-
 run "rm public/index.html"
 run "touch public/stylesheets/screen.css"
 run 'find . \( -type d -empty \) -and \( -not -regex ./\.git.* \) -exec touch {}/.gitignore \;'
+file '.gitignore', <<-END
+.DS_Store
+coverage/*
+log/*.log
+db/*.db
+db/schema.rb
+tmp/**/*
+doc/api
+doc/app
+config/database.yml
+END
 git :init
 git :add => "."
 git :commit => "-a -m 'Initial project commit'"
